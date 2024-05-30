@@ -1,0 +1,17 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    .card {
+        @apply bg-white shadow-md rounded-lg p-4;
+    }
+
+    .card-header {
+        @apply mb-4;
+    }
+
+    .card-body {
+        @apply text-gray-700;
+    }
+}

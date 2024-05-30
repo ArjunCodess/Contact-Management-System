@@ -17,16 +17,17 @@ def create_contact():
     try:
         data = request.json
 
-        required_fields = ["name", "role", "description", "gender"]
+        required_fields = ["name", "role", "description", "gender", "phone"]
 
         for field in required_fields:
-            if field not in data:
+            if field not in data or not data.get(field):
                 return jsonify({ "error": f"Missing required field: {field}" }), 400
 
         name = data.get("name")
         role = data.get("role")
         description = data.get("description")
         gender = data.get("gender")
+        phone = data.get("phone")
         name = data.get("name")
         first_name = name.split()[0]
 
@@ -38,12 +39,14 @@ def create_contact():
         else:
             img_url = None
 
-        new_contact = Contact(name = name, role = role, description = description, gender = gender, img_url = img_url)
+        new_contact = Contact(name = name, role = role, description = description, phone = phone, gender = gender, img_url = img_url)
 
         db.session.add(new_contact)
         db.session.commit()
 
-        return jsonify({ "msg": "New contact created successfully!" }), 201
+        # return jsonify({ "msg": "New contact created successfully!" }), 201
+
+        return jsonify(new_contact.to_json()), 200
     
     except Exception as e:
         db.session.rollback()
@@ -83,12 +86,15 @@ def update_contact(id):
         contact.name = data.get("name", contact.name)
         contact.role = data.get("role", contact.role)
         contact.description = data.get("description", contact.description)
+        contact.phone = data.get("phone", contact.phone)
         contact.gender = data.get("gender", contact.gender)
         
         db.session.commit()
 
-        return jsonify({ "msg": f"Contact with id = {id} updated successfully!" }), 201
-    
+        # return jsonify({ "msg": f"Contact with id = {id} updated successfully!" }), 201
+        
+        return jsonify(contact.to_json()), 200
+
     except Exception as e:
         db.session.rollback()
         return jsonify({ "error": str(e) }), 500
